@@ -14,6 +14,7 @@ router.post("/register", (req, res) => {
       return handleError(res, err);
     }
     if (user) {
+      console.log("user found")
       return res.status(400).json({
         success: false,
         message: "Username already exists",
