@@ -7,8 +7,11 @@ import { config } from "../App";
 import Footer from "./Footer";
 import Header from "./Header";
 import "./Register.css";
+import { useHistory, Link , useRouteMatch} from "react-router-dom";
+
 
 const Register = () => {
+  const history = useHistory()
   const { enqueueSnackbar } = useSnackbar();
   const[formData,setFormData] = useState({username:"",password:"",confirmPassword:""});
   const[loading,setLoading] = useState(false)
@@ -41,23 +44,29 @@ const Register = () => {
     console.log(formData);
     let result  = validateInput(formData);
     const{username,password} = formData
+    
+      console.log(window.localStorage.getItem(username))
+    
     if(result){
       setLoading(true)
       await axios.post(`${config.endpoint}/auth/register`, {username,password})
       .then(function (response) {
+
         console.log(response);
         setLoading(false)
-        if(response.data.success === true){
+        if(response.data.success){
+          console.log(response.data)
           enqueueSnackbar("Registered successfully",{variant:'success'});
+          history.push("/login")
         }
       })
       .catch(function (error) {
-        console.log(error)
+        console.log(error.response)
         setLoading(false)
          if(error.message === "Network Error!"){
           enqueueSnackbar("Something went wrong. Check that the backend is running, reachable and returns valid JSON.",{variant:"error"});
          }else{
-          enqueueSnackbar("Username is already taken",{variant:"error"});
+          enqueueSnackbar(error.response.data.message,{variant:"error"});
          }
         
         
@@ -123,7 +132,7 @@ const Register = () => {
       justifyContent="space-between"
       minHeight="100vh"
     >
-      <Header hasHiddenAuthButtons />
+      <Header hasHiddenAuthButtons={true} />
       <Box className="content">
         <Stack spacing={2} className="form">
           <h2 className="title">Register</h2>
@@ -166,9 +175,7 @@ const Register = () => {
            </Box>
           <p className="secondary-action">
             Already have an account?{" "}
-             <a className="link" href="#">
-              Login here
-             </a>
+            <Link to="/login" className="Link">Login</Link>
           </p>
         </Stack>
       </Box>
