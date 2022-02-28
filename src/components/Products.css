@@ -17,6 +17,7 @@
 
 .product-grid {
   width: 100%;
+  margin-bottom: 0.5rem;
 }
 
 .hero-heading {
@@ -52,7 +53,7 @@
   display: none !important;
 }
 
-@media screen and (min-width: 768px) {
+@media only screen and (min-width: 768px) {
   .hero {
     justify-content: flex-end;
     height: 20rem;
@@ -68,5 +69,6 @@
   }
   .search-desktop {
     display: block !important;
+    width: 29rem !important;
   }
 }
