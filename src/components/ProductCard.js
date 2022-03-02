@@ -12,7 +12,7 @@ import React from "react";
 import "./ProductCard.css";
 
 const ProductCard = ({ product, handleAddToCart }) => {
- console.log(product)
+//  console.log(product)
   return (
     <Card className="card">
       <CardMedia
@@ -26,12 +26,12 @@ const ProductCard = ({ product, handleAddToCart }) => {
           {product.name}
         </Typography>
         <Typography variant="h5" >
-          {product.cost}
+          ${product.cost}
         </Typography>
         <Rating  value={product.rating} readOnly />
       </CardContent>
       <CardActions className="card-actions">
-        <Button variant="contained" fullWidth className="card-button">ADD TO CART</Button>
+        <Button variant="contained" fullWidth className="card-button" onClick={handleAddToCart}>ADD TO CART</Button>
       </CardActions>
     </Card>
   );
