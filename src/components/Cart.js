@@ -57,7 +57,7 @@ export const generateCartItemsFrom = (cartData, productsData) => {
     temp.qty = cartData[i].qty;
     cart.push(temp);
   }
-  console.log(cart);
+  //console.log(cart);
   return cart;
 };
 
@@ -75,11 +75,18 @@ export const getTotalCartValue = (items = []) => {
   let totalVal = 0;
   for(let i=0;i<items.length;i++){
     totalVal += (items[i].cost * items[i].qty)
-    console.log(items[i])
+   // console.log(items[i])
   }
-  totalVal = '$' + totalVal
   return totalVal
 };
+
+export const getTotalItems=(items=[])=>{
+  let qunatity = 0;
+  for(let i=0;i<items.length;i++){
+    qunatity += items[i].qty
+  }
+  return qunatity
+}
 
 /**
  * Component to display the current quantity for a product and + and - buttons to update product quantity on cart
@@ -95,7 +102,7 @@ export const getTotalCartValue = (items = []) => {
  *
  *
  */
-const ItemQuantity = ({ handleQuantity,value,prodId,products,items }) => {
+const ItemQuantity = ({ handleQuantity,value,prodId,products,items,isReadOnly }) => {
   const handleAdd=(e)=>{
     let temp = value+1;
     handleQuantity(localStorage.getItem('token'),items,products,prodId,temp,false);
@@ -104,9 +111,15 @@ const ItemQuantity = ({ handleQuantity,value,prodId,products,items }) => {
     let temp = value-1;
     handleQuantity(localStorage.getItem('token'),items,products,prodId,temp,false);
   }
-
   return (
-    <Stack direction="row" alignItems="center">
+    isReadOnly ? (
+      <Stack direction="row" alignItems="center">
+        <Box padding="0.5rem" data-testid="item-qty">
+          Qty:{value}
+      </Box>
+      </Stack>
+    ) : (
+      <Stack direction="row" alignItems="center">
       <IconButton size="small" color="primary" onClick={handleMin}>
         <RemoveOutlined />
       </IconButton>
@@ -117,7 +130,9 @@ const ItemQuantity = ({ handleQuantity,value,prodId,products,items }) => {
         <AddOutlined  />
       </IconButton>
     </Stack>
-  );
+    )
+  )
+    
 };
 
 /**
@@ -134,9 +149,9 @@ const ItemQuantity = ({ handleQuantity,value,prodId,products,items }) => {
  *
  *
  */
-const Cart = ({ products, items = [], handleQuantity }) => {
+const Cart = ({ products, items = [], handleQuantity ,isReadOnly}) => {
   const history = useHistory()
-  console.log(items,'items before mapping')
+  //console.log(items,'items before mapping')
   if (!items.length) {
     return (
       <Box className="cart empty">
@@ -186,6 +201,7 @@ const Cart = ({ products, items = [], handleQuantity }) => {
               prodId  = {item._id}
               products={products}
               items={items}
+              isReadOnly={isReadOnly}
               />
 
               <Box padding="0.5rem" fontWeight="700">
@@ -212,10 +228,13 @@ const Cart = ({ products, items = [], handleQuantity }) => {
             alignSelf="center"
             data-testid="cart-total"
           >
-            {getTotalCartValue(items)}
+            ${getTotalCartValue(items)}
           </Box>
         </Box> 
-        <Box display="flex" justifyContent="flex-end" className="cart-footer">
+        {isReadOnly ? (
+          <Box></Box>
+        ):(
+          <Box display="flex" justifyContent="flex-end" className="cart-footer">
           <Button
             color="primary"
             variant="contained"
@@ -226,6 +245,7 @@ const Cart = ({ products, items = [], handleQuantity }) => {
             Checkout
           </Button>
         </Box>
+        )}
       </Box>
     </>
   );
